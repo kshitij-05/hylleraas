@@ -17,7 +17,8 @@ int main(int argc, char* argv[]){
     numeric_type alpha = 3.6;
     numeric_type gamma = 0.0;
 
-    for(auto N=0;N<5;++N){
+    std::cout << "N\tbasis size\tenergy (Eh)"<< std::endl;
+    for(auto N=0;N<14;++N){
         auto b_set = lambda_N(N,alpha,gamma);
         auto S = compute_integral(b_set, &S_ij);
         auto Vne = compute_integral(b_set, &Vne_ij);

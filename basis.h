@@ -14,8 +14,8 @@ namespace hylleraas {
         numeric_type n_, l_, m_;
         numeric_type alpha_, beta_, gamma_;
 
-        basis(numeric_type n, numeric_type l, numeric_type m, numeric_type alpha,
-              numeric_type beta, numeric_type gamma) {
+        basis(const numeric_type &n, const numeric_type &l, const numeric_type &m,
+              const numeric_type &alpha, const numeric_type &beta, const numeric_type &gamma) {
             n_ = n;
             l_ = l;
             m_ = m;

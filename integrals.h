@@ -48,12 +48,18 @@ namespace hylleraas {
         auto mj = bf2.m_;
 
         auto screen_prefactor = [](numeric_type prefactor) {
-            return (abs(prefactor) !=0.0);
+            return prefactor !=0.0;
         };
 
-        auto Knlm = [&](numeric_type n, numeric_type l, numeric_type m) {
-            return K(bf1.n_ + bf2.n_ + n, bf1.l_ + bf2.l_ + l, bf1.m_ + bf2.m_ + m, alpha,
-                     beta, gamma);
+        auto Knlm = [&](numeric_type prefactor, numeric_type n, numeric_type l, numeric_type m) {
+            if(screen_prefactor(prefactor)){
+              return prefactor * K(bf1.n_ + bf2.n_ + n, bf1.l_ + bf2.l_ + l, bf1.m_ + bf2.m_ + m, alpha,
+                              beta, gamma);
+            }
+            else{
+                numeric_type zero = 0.0;
+                return zero;
+            }
         };
 
         numeric_type Tij = 0.;
@@ -68,46 +74,54 @@ namespace hylleraas {
 
         Tij = -one_eighth* (pow(alpha, two) + pow(beta, two) + pow(gamma, two)) * S_ij(bf1, bf2);
 
-        Tij += screen_prefactor(half * nj * alpha) ? half * nj * alpha * Knlm(-one, zero, zero) : zero;
-        Tij += screen_prefactor(half * lj * beta) ? half * lj * beta * Knlm(zero, -one, zero) : zero;
-        Tij += screen_prefactor(mj * gamma) ? mj * gamma * Knlm(zero, zero, -one) : zero;
+        Tij += Knlm((half * nj * alpha), -one, zero, zero);
+        Tij += Knlm((half * lj * beta) ,zero, -one, zero);
+        Tij += Knlm((mj * gamma),zero, zero, -one);
 
-        Tij -= screen_prefactor(half * nj * (nj - one)) ? half * nj * (nj - one) * Knlm(-two, zero, zero) : zero;
-        Tij -= screen_prefactor(half * lj * (lj - one)) ? half * lj * (lj - one) * Knlm(zero, -two, zero) : zero;
-        Tij -= screen_prefactor(mj * (mj - one)) ? mj * (mj - one) * Knlm(zero, zero, -two) : zero;
+        Tij -= Knlm((half * nj * (nj - one)),-two, zero, zero);
+        Tij -= Knlm((half * lj * (lj - one)),zero, -two, zero);
+        Tij -= Knlm((mj * (mj - one)),zero, zero, -two);
 
-        Tij += screen_prefactor(half * alpha) ? half * alpha * Knlm(-one, zero, zero) : zero;
-        Tij += screen_prefactor(half * alpha) ? half * beta * Knlm(zero, -one, zero) : zero;
-        Tij += screen_prefactor(gamma) ? gamma * Knlm(zero, zero, -one) : zero;
+        Tij += Knlm((half * alpha),-one, zero, zero);
+        Tij += Knlm((half * alpha),zero, -one, zero);
+        Tij += Knlm(gamma, zero, zero, -one);
 
 
-        Tij -= screen_prefactor(nj) ? nj * Knlm(-two, zero,zero) : zero;
-        Tij -= screen_prefactor(lj) ? lj * Knlm(zero, -two, zero) : zero;
-        Tij -= screen_prefactor(two * mj) ? two * mj * Knlm(zero, zero, -two) : zero;
+        Tij -= Knlm(nj,-two, zero,zero);
+        Tij -= Knlm(lj, zero, -two, zero);
+        Tij -= Knlm((two * mj),zero, zero, -two);
 
-        Tij -= screen_prefactor(one_eighth * alpha * gamma) ? one_eighth * alpha * gamma *
-                (Knlm(-one, zero, one) + Knlm(one, zero, -one) - Knlm(-one, two, -one)) : zero;
+        Tij -= Knlm((one_eighth * alpha * gamma),-one, zero, one)
+                + Knlm((one_eighth * alpha * gamma),one, zero, -one)
+                - Knlm((one_eighth * alpha * gamma),-one, two, -one);
 
-        Tij -= screen_prefactor(one_eighth * beta * gamma) ? one_eighth * beta * gamma *
-                (Knlm(zero, -one, one) + Knlm(zero, one, -one) - Knlm(two, -one, -one)) : zero;
+        Tij -= Knlm((one_eighth * beta * gamma),zero, -one, one)
+                + Knlm((one_eighth * beta * gamma),zero, one, -one)
+                - Knlm((one_eighth * beta * gamma),two, -one, -one);
 
-        Tij += screen_prefactor(one_fourth * nj * gamma) ? one_fourth * nj * gamma *
-                (Knlm(-two, zero, one) + Knlm(zero, zero, -one) - Knlm(-two, two, -one)) : zero;
+        Tij += Knlm((one_fourth * nj * gamma),-two, zero, one)
+                + Knlm((one_fourth * nj * gamma),zero, zero, -one)
+                - Knlm((one_fourth * nj * gamma),-two, two, -one);
 
-        Tij += screen_prefactor(one_fourth * mj * alpha) ? one_fourth * mj * alpha *
-                (Knlm(-one, zero, zero) + Knlm(one, zero, -two) - Knlm(-one, two, -two)): zero;
+        Tij += Knlm((one_fourth * mj * alpha),-one, zero, zero)
+                + Knlm((one_fourth * mj * alpha),one, zero, -two)
+                - Knlm((one_fourth * mj * alpha),-one, two, -two);
 
-        Tij -= screen_prefactor(half * nj * mj) ? half * nj * mj *
-                (Knlm(-two, zero, zero) + Knlm(zero, zero, -two) - Knlm(-two, two, -two)): zero;
+        Tij -= Knlm((half * nj * mj),-two, zero, zero)
+                + Knlm((half * nj * mj),zero, zero, -two)
+                - Knlm((half * nj * mj),-two, two, -two);
 
-        Tij += screen_prefactor(one_fourth * lj * gamma) ? one_fourth * lj * gamma *
-                (Knlm(zero, -two, one) + Knlm(zero, zero, -one) - Knlm(two, -two, -one)): zero;
+        Tij += Knlm((one_fourth * lj * gamma),zero, -two, one)
+                + Knlm((one_fourth * lj * gamma),zero, zero, -one)
+                - Knlm((one_fourth * lj * gamma),two, -two, -one);
 
-        Tij += screen_prefactor(one_fourth * mj * beta) ? one_fourth * mj * beta *
-                (Knlm(zero, -one , zero) + Knlm(zero, one, -two) - Knlm(two,-one, -two)): zero;
+        Tij += Knlm((one_fourth * mj * beta),zero, -one , zero)
+                + Knlm((one_fourth * mj * beta),zero, one, -two)
+                - Knlm((one_fourth * mj * beta),two,-one, -two);
 
-        Tij -= screen_prefactor(half * lj * mj) ? half * lj * mj *
-                (Knlm(zero, two, zero) + Knlm(zero, zero, -two) - Knlm(two, -two, -two)): zero;
+        Tij -= Knlm((half * lj * mj),zero, -two, zero)
+                + Knlm((half * lj * mj),zero, zero, -two)
+                - Knlm((half * lj * mj),two, -two, -two);
 
         return Tij;
     }

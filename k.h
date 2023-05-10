@@ -21,7 +21,7 @@ namespace hylleraas {
         intT one = 1.;
         intT two = 2.;
         doubleT sixteen = 16.;
-        const double pi = boost::math::constants::pi<doubleT>();
+        const doubleT pi = boost::math::constants::pi<doubleT>();
         auto prefactor = sixteen * pow(pi, two) * factorial<doubleT>(n + one)
                          * factorial<doubleT>(l + one) * factorial<doubleT>(m + one);
         doubleT k = 0.0;
