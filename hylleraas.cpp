@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
 
     std::cout << std::setprecision(15);
 
-    numeric_type alpha = 3.6;
+    numeric_type alpha = 3.6;  // actually 2 * 1.8
     numeric_type gamma = 0.0;
 
     std::cout << "N\tbasis size\tenergy (Eh)"<< std::endl;

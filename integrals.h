@@ -74,22 +74,13 @@ namespace hylleraas {
 
         Tij = -one_eighth* (pow(alpha, two) + pow(beta, two) + pow(gamma, two)) * S_ij(bf1, bf2);
 
-        Tij += Knlm((half * nj * alpha), -one, zero, zero);
-        Tij += Knlm((half * lj * beta) ,zero, -one, zero);
-        Tij += Knlm((mj * gamma),zero, zero, -one);
+        Tij += Knlm((half * nj * alpha + half * alpha), -one, zero, zero);
+        Tij += Knlm((half * lj * beta + half * alpha) ,zero, -one, zero);
+        Tij += Knlm((mj * gamma + gamma ),zero, zero, -one);
 
-        Tij -= Knlm((half * nj * (nj - one)),-two, zero, zero);
-        Tij -= Knlm((half * lj * (lj - one)),zero, -two, zero);
-        Tij -= Knlm((mj * (mj - one)),zero, zero, -two);
-
-        Tij += Knlm((half * alpha),-one, zero, zero);
-        Tij += Knlm((half * alpha),zero, -one, zero);
-        Tij += Knlm(gamma, zero, zero, -one);
-
-
-        Tij -= Knlm(nj,-two, zero,zero);
-        Tij -= Knlm(lj, zero, -two, zero);
-        Tij -= Knlm((two * mj),zero, zero, -two);
+        Tij -= Knlm((half * nj * (nj - one) + nj),-two, zero, zero);
+        Tij -= Knlm((half * lj * (lj - one) + lj),zero, -two, zero);
+        Tij -= Knlm((mj * (mj - one) + two * mj),zero, zero, -two);
 
         Tij -= Knlm((one_eighth * alpha * gamma),-one, zero, one)
                 + Knlm((one_eighth * alpha * gamma),one, zero, -one)
